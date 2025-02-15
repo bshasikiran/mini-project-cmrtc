@@ -52,6 +52,7 @@ const getComplaints = async (req, res) => {
 //resolve the complaint
 const resolveComplaint = async (req, res) => {
     try {
+        console.log(req.params);
         const { id } = req.params;
         const { response } = req.body;
 

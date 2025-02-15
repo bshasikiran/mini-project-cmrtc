@@ -68,13 +68,21 @@ const AdminDashboard = () => {
                 return;
             }
 
-            await axios.post(`http://localhost:7000/users/admin/complaints/${id}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`
+            const response = window.prompt('Please enter your response for resolving this complaint:');
+            if (!response) {
+                return; // User cancelled or entered empty response
+            }
+
+            await axios.post(`http://localhost:7000/users/admin/complaints/${id}`, 
+                { response }, // Send response text in request body
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 }
-            });
+            );
             setComplaints(complaints.map(complaint =>
-                complaint._id === id ? { ...complaint, status: 'resolved' } : complaint
+                complaint._id === id ? { ...complaint, isResolved: true, response } : complaint
             ));
             setError(''); // Clear any previous errors
         } catch (err) {
