@@ -1,41 +1,43 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+interface AuthContextType {
+  username: string | null;
+  role: string | null;
+  login: (username: string, role: string) => void;
+  logout: () => void;
+}
 
-const AuthContext = createContext<{ username: string, role: string }>({ username: '', role: '' });
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<{ username: string, role: string } | null>(null);
-    const [loading, setLoading] = useState(true);
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [username, setUsername] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const login = (username: string, role: string) => {
+    setUsername(username);
+    setRole(role);
+  };
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            axios.get('http://localhost:7000/auth/me', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                setUser(response.data);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-                localStorage.removeItem('token');
-                setUser(null);
-                setLoading(false);
-            });
-        }
-    }, []);
+  const logout = () => {
+    setUsername(null);
+    setRole(null);
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
 
-    return (
-        <AuthContext.Provider value={{ user, loading }} >
-            {children}
-        </AuthContext.Provider>
-    );
+  const authValue = useMemo(() => ({ username, role, login, logout }), [username, role]);
+
+  return <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
-    return useContext(AuthContext);
-};  
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

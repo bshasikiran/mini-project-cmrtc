@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -27,7 +30,7 @@ const Login = () => {
       const data = await response.json();
       localStorage.setItem('token', data.token);
       console.log('Login successful');
-
+      login(username, data.role);
       const newResponse = await fetch('http://localhost:7000/auth/me', {
         method: 'GET',
         headers: {
