@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 interface AuthContextType {
   username: string | null;
@@ -21,6 +21,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUsername(username);
     setRole(role);
   };
+
+    // Function to initialize authentication (runs on page load)
+    const initAuth = async () => {
+        const token = localStorage.getItem('token'); // Get token from storage
+        if (!token) return; // If no token, do nothing
+    
+        try {
+          const response = await fetch('http://localhost:7000/auth/me', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`, // Send token in request
+            },
+          });
+          console.log(response);
+    
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+          }
+    
+          const data = await response.json(); // Extract response data
+          console.log(data);
+          setUsername(data.username);
+          setRole(data.role);
+        } catch (error) {
+          console.error('Error fetching user:', error);
+          logout(); // Clear auth state if request fails
+        }
+      };
+    
+      // Run initAuth when the component mounts
+      useEffect(() => {
+        initAuth();
+      }, []);
 
   const logout = () => {
     setUsername(null);

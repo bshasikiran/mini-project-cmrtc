@@ -1,13 +1,33 @@
 import { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 const Signup = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add signup logic here
+    try {
+      const response = await fetch('http://localhost:7000/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Signup failed');
+      }
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('Error signing up:', error);  
+    }
+    navigate('/login');
   };
 
   return (
