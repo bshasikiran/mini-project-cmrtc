@@ -30,7 +30,9 @@ const createComplaint = async (req, res) => {
 //get all complaints for the user
 const getComplaintsForUser = async (req, res) => {
     try {
-        const complaints = await Complaint.find({ userId: req.user.id });
+        console.log(req.user.userId);
+        const complaints = await Complaint.find({ user: req.user.userId });
+        console.log(complaints);
         res.status(200).json({ complaints });
     } catch (error) {
         res.status(500).json({ message: "Error getting complaints" });
