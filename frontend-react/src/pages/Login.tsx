@@ -5,12 +5,23 @@ import { useAuth } from '../context/AuthContext';
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const validateEmail = (email: string) => {
+    return email.endsWith('@cmrtc.ac.in');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+
+    if (!validateEmail(email)) {
+      setError('Please use your college email (@cmrtc.ac.in)');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:7000/auth/login', {
         method: 'POST',
@@ -18,41 +29,30 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: username,
-          password: password,
+          username: email,
+          password,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        const data = await response.json();
+        throw new Error(data.message || 'Login failed');
       }
 
       const data = await response.json();
       localStorage.setItem('token', data.token);
-      console.log('Login successful');
-      login(username, data.role);
-      const newResponse = await fetch('http://localhost:7000/auth/me', {
-        method: 'GET',
+      login(email, data.role);
+
+      const userData = await fetch('http://localhost:7000/auth/me', {
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${data.token}`,
+          'Authorization': `Bearer ${data.token}`,
         },
-      });
+      }).then(res => res.json());
 
-      if (!newResponse.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-      
-      const userData = await newResponse.json();
-
-      if(userData.role === 'admin'){
-        navigate('/admin-dashboard');
-      }else{
-        navigate('/user-dashboard');
-      }
-
+      navigate(userData.role === 'admin' ? '/admin-dashboard' : '/user-dashboard');
     } catch (error) {
       console.error('Error during login:', error);
+      setError(error instanceof Error ? error.message : 'Login failed');
     }
   };
 
@@ -62,19 +62,25 @@ const Login = () => {
         <h2 className="text-3xl font-bold text-blue-900 text-center mb-8">
           Welcome Back
         </h2>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-              Email Address
+              College Email
             </label>
             <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              placeholder="Enter your username"
+              placeholder="yourname@cmrtc.ac.in"
               required
+              pattern=".*@cmrtc\.ac\.in$"
             />
           </div>
           <div>

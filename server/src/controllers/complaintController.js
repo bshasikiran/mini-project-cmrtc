@@ -43,7 +43,7 @@ const getComplaintsForUser = async (req, res) => {
 //get all complaints for the admin 
 const getComplaints = async (req, res) => {
     try {
-        const complaints = await Complaint.find();
+        const complaints = await Complaint.find().populate('user', 'username');
         res.status(200).json({ complaints });
     } catch (error) {
         res.status(500).json({ message: "Error getting complaints" });

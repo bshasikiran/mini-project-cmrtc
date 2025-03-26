@@ -2,24 +2,39 @@ const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const ADMIN_CODE = process.env.ADMIN_REGISTRATION_CODE || 'admin123'; // Set this in your .env file
+
 const register = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, adminCode, role } = req.body;
+        
+        if (!username.endsWith('@cmrtc.ac.in')) {
+            return res.status(400).json({ message: "Please use your college email (@cmrtc.ac.in)" });
+        }
+
+        // Check if trying to register as admin
+        if (role === 'admin') {
+            if (!adminCode || adminCode !== ADMIN_CODE) {
+                return res.status(400).json({ message: "Invalid admin registration code" });
+            }
+        }
+
         const userExists = await User.findOne({ username });
         if (userExists) {
             return res.status(400).json({ message: "User already exists" });
         }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             username,
             password: hashedPassword,
-            role:"user"
+            role: role || 'user' // Default to 'user' if no role specified
         });
+        
         await newUser.save();
-        res.status(201).json({ message: `User created successfully ${newUser.username}` });
-
+        res.status(201).json({ message: "User created successfully" });
     } catch (error) {
-        console.log(error);
+        console.error("Registration error:", error);
         res.status(500).json({ message: "Error creating user" });
     }
 }
