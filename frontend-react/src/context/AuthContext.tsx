@@ -1,10 +1,12 @@
 import { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 interface AuthContextType {
   username: string | null;
   role: string | null;
   login: (username: string, role: string) => void;
   logout: () => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,54 +18,64 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [username, setUsername] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); // Add loading state
   const navigate = useNavigate();
+
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
   const login = (username: string, role: string) => {
     setUsername(username);
     setRole(role);
+    localStorage.setItem('username', username);
+    localStorage.setItem('role', role);
   };
-
-    // Function to initialize authentication (runs on page load)
-    const initAuth = async () => {
-        const token = localStorage.getItem('token'); // Get token from storage
-        if (!token) return; // If no token, do nothing
-    
-        try {
-          const response = await fetch('https://mini-project-cmrtc-api.onrender.com/auth/me', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`, // Send token in request
-            },
-          });
-          console.log(response);
-    
-          if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-          }
-    
-          const data = await response.json(); // Extract response data
-          console.log(data);
-          setUsername(data.username);
-          setRole(data.role);
-        } catch (error) {
-          console.error('Error fetching user:', error);
-          logout(); // Clear auth state if request fails
-        }
-      };
-    
-      // Run initAuth when the component mounts
-      useEffect(() => {
-        initAuth();
-      }, []);
 
   const logout = () => {
     setUsername(null);
     setRole(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
     navigate('/login');
   };
 
-  const authValue = useMemo(() => ({ username, role, login, logout }), [username, role]);
+  // Auto-login using stored token
+  const initAuth = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${baseUrl}/auth/me`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+
+      const data = await response.json();
+      setUsername(data.username);
+      setRole(data.role);
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      logout();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    initAuth();
+  }, []);
+
+  const authValue = useMemo(() => ({ username, role, login, logout, loading }), [username, role, loading]);
 
   return <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>;
 };
