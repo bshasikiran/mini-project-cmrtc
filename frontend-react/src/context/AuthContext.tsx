@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (!token) return; // If no token, do nothing
     
         try {
-          const response = await fetch('http://localhost:7000/auth/me', {
+          const response = await fetch('https://mini-project-cmrtc-api.onrender.com/auth/me', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
