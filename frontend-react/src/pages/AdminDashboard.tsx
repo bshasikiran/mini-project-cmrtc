@@ -49,7 +49,7 @@ const AdminDashboard = () => {
 
         const fetchComplaints = async () => {
             try {
-                const response = await axios.get('http://localhost:7000/users/admin/complaints', {
+                const response = await axios.get('https://mini-project-cmrtc-api.onrender.com/users/admin/complaints', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -152,7 +152,7 @@ const AdminDashboard = () => {
                 return; // User cancelled or entered empty response
             }
 
-            await axios.post(`http://localhost:7000/users/admin/complaints/${id}`, 
+            await axios.post(`https://mini-project-cmrtc-api.onrender.com/users/admin/complaints/${id}`, 
                 { response }, // Send response text in request body
                 {
                     headers: {
@@ -193,7 +193,7 @@ const AdminDashboard = () => {
                 return;
             }
 
-            await axios.delete(`http://localhost:7000/users/admin/complaints/${id}`, {
+            await axios.delete(`https://mini-project-cmrtc-api.onrender.com/users/admin/complaints/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
