@@ -25,7 +25,7 @@ const UserDashboard = () => {
           navigate('/login');
           return;
         }
-        const response = await fetch('http://localhost:7000/users/user/complaints', {
+        const response = await fetch('https://mini-project-cmrtc-api.onrender.com/users/user/complaints', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
