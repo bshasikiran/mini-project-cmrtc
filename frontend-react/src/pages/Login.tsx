@@ -23,7 +23,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:7000/auth/login', {
+      const response = await fetch('https://mini-project-cmrtc-api.onrender.com/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ const Login = () => {
       localStorage.setItem('token', data.token);
       login(email, data.role);
 
-      const userData = await fetch('http://localhost:7000/auth/me', {
+      const userData = await fetch('https://mini-project-cmrtc-api.onrender.com/auth/me', {
         headers: {
           'Authorization': `Bearer ${data.token}`,
         },
