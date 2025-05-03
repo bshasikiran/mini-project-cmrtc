@@ -29,7 +29,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:7000/auth/register', {
+      const response = await fetch('https://mini-project-cmrtc-api.onrender.com/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
