@@ -49,7 +49,7 @@ const AdminDashboard = () => {
 
         const fetchComplaints = async () => {
             try {
-                const response = await axios.get('https://mini-project-cmrtc-api.onrender.com/users/admin/complaints', {
+                const response = await axios.get('https://mini-project-cmrtc-api.onrender.com', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
