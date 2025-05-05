@@ -29,11 +29,7 @@ const Signup = () => {
     }
 
     try {
-<<<<<<< HEAD
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
-=======
-      const response = await fetch('https://mini-project-cmrtc-api.onrender.com/auth/register', {
->>>>>>> 296ad904be5c5fc45fcd40ef8f8c0a27a533cd46
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

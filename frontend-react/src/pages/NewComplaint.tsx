@@ -18,11 +18,7 @@ const NewComplaint = () => {
         return;
       }
 
-<<<<<<< HEAD
       const response = await fetch(`${import.meta.env.VITE_API_URL}/users/user/create-complaint`, {
-=======
-      const response = await fetch('https://mini-project-cmrtc-api.onrender.com/users/user/create-complaint', {
->>>>>>> 296ad904be5c5fc45fcd40ef8f8c0a27a533cd46
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

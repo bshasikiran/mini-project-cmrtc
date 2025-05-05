@@ -25,11 +25,7 @@ const UserDashboard = () => {
           navigate('/login');
           return;
         }
-<<<<<<< HEAD
         const response = await fetch(`${import.meta.env.VITE_API_URL}/users/user/complaints`, {
-=======
-        const response = await fetch('https://mini-project-cmrtc-api.onrender.com/users/user/complaints', {
->>>>>>> 296ad904be5c5fc45fcd40ef8f8c0a27a533cd46
           headers: {
             'Authorization': `Bearer ${token}`
           }
