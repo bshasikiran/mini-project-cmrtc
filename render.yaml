@@ -1,0 +1,12 @@
+services:
+  - type: static
+    name: mini-project-cmrtc-your-suffix
+    branch: main
+    rootDir: frontend-react
+    buildCommand: npm install; tsc -b && npx vite build
+    publishDirectory: frontend-react/dist
+    envVars:
+      # Add your environment variables here as key-value pairs
+      # Example:
+      # - key: REACT_APP_API_URL
+      #   value: https://api.example.com
