@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 interface AuthContextType {
   username: string | null;
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (!token) return; // If no token, do nothing
     
         try {
-          const response = await fetch('http://localhost:7000/auth/me', {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

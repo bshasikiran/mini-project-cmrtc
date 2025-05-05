@@ -25,7 +25,7 @@ const UserDashboard = () => {
           navigate('/login');
           return;
         }
-        const response = await fetch('http://localhost:7000/users/user/complaints', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/users/user/complaints`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

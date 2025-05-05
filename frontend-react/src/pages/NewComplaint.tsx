@@ -18,7 +18,7 @@ const NewComplaint = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:7000/users/user/create-complaint', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/user/create-complaint`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
