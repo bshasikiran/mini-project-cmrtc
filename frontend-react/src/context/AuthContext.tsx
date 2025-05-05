@@ -28,7 +28,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (!token) return; // If no token, do nothing
     
         try {
+<<<<<<< HEAD
           const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+=======
+          const response = await fetch('https://mini-project-cmrtc-api.onrender.com', {
+>>>>>>> 296ad904be5c5fc45fcd40ef8f8c0a27a533cd46
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

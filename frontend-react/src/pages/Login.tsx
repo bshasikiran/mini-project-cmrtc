@@ -23,7 +23,11 @@ const Login = () => {
     }
 
     try {
+<<<<<<< HEAD
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+=======
+      const response = await fetch('https://mini-project-cmrtc-api.onrender.com/auth/login', {
+>>>>>>> 296ad904be5c5fc45fcd40ef8f8c0a27a533cd46
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +47,11 @@ const Login = () => {
       localStorage.setItem('token', data.token);
       login(email, data.role);
 
+<<<<<<< HEAD
       const userData = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+=======
+      const userData = await fetch('https://mini-project-cmrtc-api.onrender.com/auth/me', {
+>>>>>>> 296ad904be5c5fc45fcd40ef8f8c0a27a533cd46
         headers: {
           'Authorization': `Bearer ${data.token}`,
         },
